@@ -1,0 +1,187 @@
+
+CREATE TABLE customer(
+customer_id 	INT AUTO_INCREMENT,
+customer_name   VARCHAR(100),
+city 		VARCHAR(100),
+PRIMARY KEY(customer_id)      
+);
+create table orderr(
+order_id 	int ,
+order_date    	Date,
+customer_id 	int ,
+PRIMARY KEY(order_id)
+);
+CREATE TABLE order_item (
+order_id	int, 
+item_id 	int,
+quantity 	int  
+);
+CREATE TABLE item(
+item_id 	int ,
+unit_price 	int ,
+PRIMARY KEY(item_id)
+);
+CREATE table warehouse(
+warehouse_id int PRIMARY KEY,
+warehouse_city VARCHAR(100)
+);
+CREATE TABLE shipment (
+order_id 	int,
+warehouse_id 	int,
+ship_date 	datetime,
+PRIMARY KEY (warehouse_id, order_id)  
+);
+
+
+ALTER TABLE orderr ADD FOREIGN KEY (customer_id) REFERENCES customer(customer_id);
+ALTER TABLE order_item ADD FOREIGN KEY (order_id) REFERENCES orderr (order_id);
+ALTER TABLE order_item ADD FOREIGN KEY (item_id) REFERENCES item (item_id);
+ALTER TABLE shipment ADD FOREIGN KEY (order_id) REFERENCES orderr (order_id);
+ALTER TABLE shipment ADD FOREIGN KEY (warehouse_id) REFERENCES warehouse(warehouse_id);
+
+
+1:
+SELECT customer.customer_name FROM customer WHERE customer_name LIKE 'Ma%';
+			
+			Mara Hudson	
+			Malachi Baxter	
+			Mark Franks	
+			May Reese	
+			Mariko Frederick	
+			Madonna Foreman	
+			Marvin Rich	
+			Macy Holman	
+2:
+SELECT order_item.quantity ,item.Unit_price*order_item.quantity FROM order_item INNER JOIN item ON (item.item_id = order_item.item_id);
+			4		3772	
+			25		113675	
+			12		63408	
+			2		830	
+			21		111426	
+			22		64570	
+			1		5143	
+			8		45504	
+			3		19020	
+			9		11538	
+			25		207475	
+			7		21945	
+			14		121226	
+			8		15520	
+			4		39276	
+			3		23589	
+			6		40278	
+			6		2136	
+			12		75840	
+			14		101808	
+			3		10959	
+			11		12925	
+			5		32320	
+			2		9094	
+			2		12536	
+3:SELECT order_id from shipment AS s inner join warehouse AS w on(s.warehouse_id=w.warehouse_id) where w.warehouse_city='Arica' 
+GROUP BY order_id
+			16	
+			27		
+			28	
+			114	
+			124	
+			182	
+			183	
+
+
+4:SELECT SUM(item.Unit_price*order_item.quantity) FROM shipment INNER JOIN (item INNER JOIN order_item ON item.item_id = order_item.item_id) ON shipment.order_id = order_item.order_id WHERE shipment.warehouse_id = 8;
+
+5:SELECT warehouse.warehouse_id, warehouse.warehouse_city, COUNT(order_id) FROM warehouse LEFT JOIN shipment ON (warehouse.warehouse_id=shipment.warehouse_id) 
+GROUP BY warehouse.warehouse_id;
+warehouse_id	warehouse_city	COUNT(order_id)	
+1		Geelong			3	
+2		Grande Prairie		2	
+3		Lede			4	
+4		Oostende		3	
+5		Kumluca			4	
+6		Arica			7	
+7		Midlands		3	
+8		Aulnay-sous-Bois	7	
+9		Soria			0	
+10		Rouvroy			2	
+11		Precenicco		5	
+12		Sesto al Reghena	3	
+13		Edmundston		1	
+14		Beho			2	
+15		Aisén			4	
+16		Essex			8	
+17		Merritt			4	
+18		Ellikom			4		
+19		l'Escaillre		3	
+20		Houdemont		0	
+21		Enterprise		3	
+22		Queilén			2	
+23		Southwell		1		
+24		Recoleta		2	
+25		Panchià			5	
+
+	
+6:SELECT customer.customer_name,COUNT(order_id) FROM customer LEFT JOIN `orderr` ON (customer.customer_id = `orderr`.customer_id) 
+GROUP BY customer.customer_name;
+customer_name		COUNT(order_id)	
+Addison Meadows			1	
+Alexander Wiley			1	
+Allen Howe			0	
+Althea Hebert			1		
+Amal Marsh			1	
+Angela Burnett			1	
+Anika Gonzales			2	
+April Nguyen			2		
+Asher Clayton			2	
+Bernard Drake			3	
+Brett Zimmerman			2	
+Brody Whitfield			3	
+Cade Crosby			3	
+Carly Lowe			2	
+Chadwick Hogan			2	
+Channing Lynn			2	
+Charlotte Rios			5	
+Christen Guerrero		1	
+Clarke Mccullough		3	
+Courtney Dale			4	
+Cyrus Saunders			3	
+Deanna Morales			3	
+Donna Bernard			2	
+Dora Howe			2	
+Echo Bolton			2	
+
+
+7:SELECT item.item_id FROM item LEFT JOIN (order_item INNER JOIN `orderr` ON order_item.order_id = `orderr`.`order_id`) ON (order_item.item_id=item.item_id)
+  WHERE order_item.quantity IS NULL;
+127.0.0.1/lab444/item/		http://localhost:8080/phpmyadmin/index.php?route=/table/sql&db=lab444&table=customer
+   Showing rows 0 - 24 (38 total, Query took 0.0007 seconds.)
+SELECT item.item_id FROM item LEFT JOIN (order_item INNER JOIN `orderr` ON order_item.order_id = `orderr`.`order_id`) ON (order_item.item_id=item.item_id)
+  WHERE order_item.quantity IS NULL;
+
+
+item_id	
+3	
+5	
+9	
+10	
+14	
+16	
+24	
+28	
+34	
+42	
+51	
+55	
+56	
+73	
+75	
+78	
+80	
+81	
+84	
+88	
+89	
+92	
+94	
+99	
+109	
